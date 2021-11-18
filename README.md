@@ -58,4 +58,4 @@ response = urlbox_client.get(format=format, options=options)
 ## Feedback
 
 
-Feel free to contact us if you have spot a bug or have any suggestion at chris`[at]`urlbox.com.
+Feel free to contact us if you have spot a bug or have any suggestion at chris`[at]`urlbox.io.

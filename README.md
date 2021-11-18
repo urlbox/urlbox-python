@@ -19,6 +19,7 @@ Python 3.x
 ## Usage
 
 First, grab your UrlBox API key* found in your <a  href="https://urlbox.io/dashboard/api" target="_blank">UrlBox Dashboard</a>, used to initialise the UrlBoxClient instance.
+
 *\* and grab your API secret - if you want to make authenticated requests.*
 
 ```python

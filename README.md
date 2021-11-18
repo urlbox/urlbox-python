@@ -1,11 +1,11 @@
 # UrlBox Python Library
 
-The UrlBox Python library provides convenient access to the [UrlBox API](https://urlbox.io/) from your Python application.
+The UrlBox Python library provides convenient access to the <a href="https://urlbox.io/" target="_blank">UrlBox API</a> from your Python application.
 
 
 ## Documentation
 
-See the [UrlBox API Docs](https://urlbox.io/docs/overview).
+See the <a href=https://urlbox.io/docs/overview target="_blank">UrlBox API Docs</a>.
 
 ## Requirements
 
@@ -18,24 +18,28 @@ Python 3.x
 
 ## Usage
 
-First, grab your UrlBox API key (*and your API secret if you want to make authenticated requests*) found in your [UrlBox Dashboard](https://urlbox.io/dashboard/api) to initialise the UrlBoxClient instance.
+First, grab your UrlBox API key* found in your <a  href="https://urlbox.io/dashboard/api" target="_blank">UrlBox Dashboard</a>, used to initialise the UrlBoxClient instance.
+*\* and grab your API secret - if you want to make authenticated requests.*
 
 ```python
 
 from urlbox import UrlBoxClient
 
-
-urlbox_client = UrlBoxClient(api_key="YOUR_API_KEY", api_secret="YOUR_API_SECRET") # YOUR_API_SECRET is optional
+# Initialise the UrlBoxClient (YOUR_API_SECRET is optional)
+urlbox_client = UrlBoxClient(api_key="YOUR_API_KEY", api_secret="YOUR_API_SECRET")
 
 format = "png"  # can be either: png, jpg or jpeg, avif, webp ,pdf, svg, html
-options = {"url": "http://example.com/", "full_page": True, "width": 300}
-# See all available options here: https://urlbox.io/docs/options
 
-# TODO: Break out the url from the options? That's different to the API, but makes sense as it's a different type of parameter.
+# See all available options here: https://urlbox.io/docs/options
+options = {"url": "http://example.com/", "full_page": True, "width": 300}
+
+# TODO: Break out the url from the options? That's different to the API,
+# but makes sense as it's a different type of parameter.
+# eg: response = urlbox_client.get(url, format=format, options=options)
 response = urlbox_client.get(format=format, options=options)
 
-# The urlbox API will return binary data as the response
-# with the Content-Type header set to the relevant mime-type for the format requested.
+# The urlbox API will return binary data as the response with the
+# Content-Type header set to the relevant mime-type for the format requested.
 # For example, if you requested png format, the Content-Type will be image/png
 # and response body will be the actual PNG binary data.
 
@@ -44,7 +48,8 @@ response = urlbox_client.get(format=format, options=options)
 # TODO: Include further endpoints (head, post, etc), polling and webhook functionality.
 
 # Authenticated requests JUST WORK when you supply YOUR_API_SECRET
-# All requests will be authenticated when you supply YOUR_API_SECRET, unless you override: authenticated_request=False
+# All requests will be authenticated when you supply YOUR_API_SECRET,
+# unless you override: authenticated_request=False
 ```
 
 

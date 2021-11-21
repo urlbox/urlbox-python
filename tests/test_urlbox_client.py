@@ -57,7 +57,7 @@ def test_get_successful():
     }
 
     urlbox_request_url = (
-        f"{UrlboxClient.URLBOX_BASE_API_URL}"
+        f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
         f"?{urllib.parse.urlencode(options)}"
     )
@@ -104,7 +104,7 @@ def test_get_successful_white_space_url():
     options_parsed["url"] = url
 
     urlbox_request_url = (
-        f"{UrlboxClient.URLBOX_BASE_API_URL}"
+        f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
         f"?{urllib.parse.urlencode(options_parsed)}"
     )
@@ -148,6 +148,48 @@ def test_get_invalid_url():
         urlbox_client.get(options)
 
     assert url in str(invalid_url_exception.value)
+
+
+def test_get_with_different_host_name():
+    api_host_name = random.choice(["api-eu.urlbox.io", "api-direct.urlbox.io"])
+    api_key = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+    url = fake.url()
+
+    options = {
+        "url": url,
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    urlbox_request_url = (
+        f"https://{api_host_name}/"
+        f"{api_key}/{format}"
+        f"?{urllib.parse.urlencode(options)}"
+    )
+
+    urlbox_client = UrlboxClient(api_key=api_key, api_host_name=api_host_name)
+
+    with requests_mock.Mocker() as requests_mocker:
+        with open(
+            "tests/files/urlbox_screenshot.png", "rb"
+        ) as urlbox_screenshot:
+            requests_mocker.get(
+                urlbox_request_url,
+                content=urlbox_screenshot.read(),
+                headers={"content-type": f"image/{format}"},
+            )
+
+            response = urlbox_client.get(options)
+
+            assert response.status_code == 200
+            assert format in response.headers["Content-Type"]
+            assert isinstance(response, requests.models.Response)
+            assert isinstance(response.content, bytes)
 
 
 # TODO:

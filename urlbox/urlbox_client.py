@@ -17,11 +17,12 @@ class UrlboxClient:
         Required for authenticated requests.
     """
 
-    URLBOX_BASE_API_URL = "https://api.urlbox.io/v1/"
+    BASE_API_URL = "https://api.urlbox.io/v1/"
 
-    def __init__(self, *, api_key, api_secret=None):
+    def __init__(self, *, api_key, api_secret=None, api_host_name=None):
         self.api_key = api_key
         self.api_secret = api_secret
+        self.base_api_url = self._init_base_api_url(api_host_name)
 
     def get(self, options):
         """
@@ -46,15 +47,29 @@ class UrlboxClient:
         if not self._valid_url(url_stripped):
             raise InvalidUrlException(url_stripped)
 
+        request_url = (
+            f"{self.base_api_url}"
+            f"{self.api_key}/{format}"
+            f"?url={self._parsed_url(url_stripped)}"
+            f"&{urllib.parse.urlencode(options)}"
+        )
+
         return requests.get(
             (
-                f"{self.URLBOX_BASE_API_URL}"
+                f"{self.base_api_url}"
                 f"{self.api_key}/{format}"
                 f"?{urllib.parse.urlencode(options)}"
             )
         )
 
     # private
+
+    def _init_base_api_url(self, api_host_name):
+        if api_host_name is None:
+            return self.BASE_API_URL
+        else:
+            return f"https://{api_host_name}/"
+
     def _parsed_url(self, url):
         return urllib.parse.quote(url)
 

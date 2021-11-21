@@ -1,5 +1,5 @@
 from faker import Faker
-from urlbox import UrlboxClient
+from urlbox import InvalidUrlException, UrlboxClient
 import pytest
 import random
 import requests
@@ -40,8 +40,8 @@ def test_api_key_not_provided():
 
 # Test get()
 # valid api key
-# valid format and options
-def test_successful_request():
+# valid url, format and options
+def test_get_successful():
     api_key = fake.pystr()
 
     format = random.choice(
@@ -80,7 +80,71 @@ def test_successful_request():
             assert isinstance(response.content, bytes)
 
 
+# valid url but with white spaces before and after
+def test_get_successful():
+    api_key = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+    options = {
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+    url = fake.url()
+    url_with_white_spaces = f"  {url}   "
+
+    print("!!! - url ", url)
+
+    urlbox_request_url = (
+        f"{UrlboxClient.URLBOX_BASE_API_URL}"
+        f"{api_key}/{format}"
+        f"?url={urllib.parse.quote(url)}"
+        f"&{urllib.parse.urlencode(options)}"
+    )
+
+    urlbox_client = UrlboxClient(api_key=api_key)
+
+    with requests_mock.Mocker() as requests_mocker:
+        with open(
+            "tests/files/urlbox_screenshot.png", "rb"
+        ) as urlbox_screenshot:
+            requests_mocker.get(
+                urlbox_request_url,
+                content=urlbox_screenshot.read(),
+                headers={"content-type": f"image/{format}"},
+            )
+
+            response = urlbox_client.get(
+                url_with_white_spaces, format=format, options=options
+            )
+
+            assert response.status_code == 200
+            assert format in response.headers["Content-Type"]
+            assert isinstance(response, requests.models.Response)
+            assert isinstance(response.content, bytes)
+
+
+def test_get_invalid_url():
+    api_key = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+    options = {
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+    url = fake.address()
+
+    urlbox_client = UrlboxClient(api_key=api_key)
+
+    with pytest.raises(InvalidUrlException) as invalid_url_exception:
+        urlbox_client.get(url, format=format, options=options)
+
+    assert url in str(invalid_url_exception.value)
+
+
 # TODO:
-# Test invalid URL
-# Test URL with white spaces
 # Test invalid API key
+# Test with api_secret - authenticated request

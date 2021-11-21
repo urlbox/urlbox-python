@@ -1,6 +1,7 @@
 import requests
 import urllib.parse
 import validators
+from urlbox import InvalidUrlException
 
 
 class UrlboxClient:
@@ -36,20 +37,23 @@ class UrlboxClient:
             Full options reference: https://urlbox.io/docs/options
         """
 
-        self._validate_url(url)
+        url_stripped = url.strip()
+
+        if not self._valid_url(url_stripped):
+            raise InvalidUrlException(url_stripped)
 
         return requests.get(
             (
                 f"{self.URLBOX_BASE_API_URL}"
                 f"{self.api_key}/{format}"
-                f"?url={self._parsed_url(url)}"
+                f"?url={self._parsed_url(url_stripped)}"
                 f"&{urllib.parse.urlencode(options)}"
             )
         )
 
     # private
     def _parsed_url(self, url):
-        return urllib.parse.quote(url.strip())
+        return urllib.parse.quote(url)
 
-    def _validate_url(self, url):
-        validators.url(url)
+    def _valid_url(self, url):
+        return validators.url(url) == True

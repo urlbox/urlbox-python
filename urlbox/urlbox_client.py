@@ -47,13 +47,6 @@ class UrlboxClient:
         if not self._valid_url(url_stripped):
             raise InvalidUrlException(url_stripped)
 
-        request_url = (
-            f"{self.base_api_url}"
-            f"{self.api_key}/{format}"
-            f"?url={self._parsed_url(url_stripped)}"
-            f"&{urllib.parse.urlencode(options)}"
-        )
-
         return requests.get(
             (
                 f"{self.base_api_url}"

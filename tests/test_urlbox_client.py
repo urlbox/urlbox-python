@@ -83,7 +83,7 @@ def test_get_successful():
 
 
 # valid url but with white spaces before and after
-def test_get_successful():
+def test_get_successful_white_space_url():
     api_key = fake.pystr()
 
     format = random.choice(

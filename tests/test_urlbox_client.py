@@ -47,17 +47,19 @@ def test_get_successful():
     format = random.choice(
         ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
     )
+    url = fake.url()
+
     options = {
+        "url": url,
+        "format": format,
         "full_page": random.choice([True, False]),
         "width": fake.random_int(),
     }
-    url = fake.url()
 
     urlbox_request_url = (
         f"{UrlboxClient.URLBOX_BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?url={urllib.parse.quote(url)}"
-        f"&{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -72,7 +74,7 @@ def test_get_successful():
                 headers={"content-type": f"image/{format}"},
             )
 
-            response = urlbox_client.get(url, format=format, options=options)
+            response = urlbox_client.get(options)
 
             assert response.status_code == 200
             assert format in response.headers["Content-Type"]
@@ -87,20 +89,24 @@ def test_get_successful():
     format = random.choice(
         ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
     )
-    options = {
-        "full_page": random.choice([True, False]),
-        "width": fake.random_int(),
-    }
+
     url = fake.url()
     url_with_white_spaces = f"  {url}   "
 
-    print("!!! - url ", url)
+    options = {
+        "url": url_with_white_spaces,
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    options_parsed = options.copy()
+    options_parsed["url"] = url
 
     urlbox_request_url = (
         f"{UrlboxClient.URLBOX_BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?url={urllib.parse.quote(url)}"
-        f"&{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options_parsed)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -115,9 +121,7 @@ def test_get_successful():
                 headers={"content-type": f"image/{format}"},
             )
 
-            response = urlbox_client.get(
-                url_with_white_spaces, format=format, options=options
-            )
+            response = urlbox_client.get(options)
 
             assert response.status_code == 200
             assert format in response.headers["Content-Type"]
@@ -126,21 +130,22 @@ def test_get_successful():
 
 
 def test_get_invalid_url():
-    api_key = fake.pystr()
-
     format = random.choice(
         ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
     )
+    url = fake.address()
+
     options = {
+        "url": url,
+        "format": format,
         "full_page": random.choice([True, False]),
         "width": fake.random_int(),
     }
-    url = fake.address()
 
-    urlbox_client = UrlboxClient(api_key=api_key)
+    urlbox_client = UrlboxClient(api_key=fake.pystr())
 
     with pytest.raises(InvalidUrlException) as invalid_url_exception:
-        urlbox_client.get(url, format=format, options=options)
+        urlbox_client.get(options)
 
     assert url in str(invalid_url_exception.value)
 

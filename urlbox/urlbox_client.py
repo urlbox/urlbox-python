@@ -23,21 +23,25 @@ class UrlboxClient:
         self.api_key = api_key
         self.api_secret = api_secret
 
-    def get(self, url, *, format, options={}):
+    def get(self, options):
         """
             Make simple get request to Urlbox API
 
-            :param url: URL to create screenshot of.
-            :param format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html".
             :param options: dictionary containing all of the options you want to set.
-            eg: {"full_page": True, "width": 300}
+            eg: {"url": "http://example.com/", "format": "png", "full_page": True, "width": 300}
 
-            Example: urlbox_client.get("http://example.com/", format="png", options={"full_page": True, "width": 300})
+            format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html".
+
+            Example: urlbox_client.get({"url": "http://example.com/", "format": "png", "full_page": True, "width": 300})
             API example: https://urlbox.io/docs/getting-started
             Full options reference: https://urlbox.io/docs/options
         """
 
+        format = options["format"]
+        url = options["url"]
+
         url_stripped = url.strip()
+        options["url"] = url_stripped
 
         if not self._valid_url(url_stripped):
             raise InvalidUrlException(url_stripped)
@@ -46,8 +50,7 @@ class UrlboxClient:
             (
                 f"{self.URLBOX_BASE_API_URL}"
                 f"{self.api_key}/{format}"
-                f"?url={self._parsed_url(url_stripped)}"
-                f"&{urllib.parse.urlencode(options)}"
+                f"?{urllib.parse.urlencode(options)}"
             )
         )
 

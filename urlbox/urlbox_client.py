@@ -66,6 +66,41 @@ class UrlboxClient:
         else:
             return self._get_authenticated(format, url_encoded_options)
 
+    def head(self, options):
+        """
+            Make simple head request to Urlbox API
+
+            To get the response status/headers without pulling down the full response body.
+
+            :param options: dictionary containing all of the options you want to set.
+            eg: {"url": "http://example.com/", "format": "png", "full_page": True, "width": 300}
+
+            format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html".
+
+            Example: urlbox_client.get({"url": "http://example.com/", "format": "png", "full_page": True, "width": 300})
+            API example: https://urlbox.io/docs/getting-started
+            Full options reference: https://urlbox.io/docs/options
+        """
+
+        format = options["format"]
+        url = options["url"]
+
+        url_stripped = url.strip()
+        url_parsed = self._prepend_schema(url_stripped)
+        options["url"] = url_parsed
+        url_encoded_options = urllib.parse.urlencode(options)
+
+        if not self._valid_url(url_parsed):
+            raise InvalidUrlException(url_parsed)
+
+        return requests.head(
+            (
+                f"{self.base_api_url}"
+                f"{self.api_key}/{format}"
+                f"?{url_encoded_options}"
+            )
+        )
+
     # private
 
     def _get_authenticated(self, format, url_encoded_options):

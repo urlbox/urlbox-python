@@ -288,5 +288,41 @@ def test_get_with_different_host_name():
             assert isinstance(response.content, bytes)
 
 
-# TODO:
-# Test invalid API key
+def test_head_request():
+    api_key = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+    url = fake.url()
+
+    options = {
+        "url": url,
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    urlbox_request_url = (
+        f"{UrlboxClient.BASE_API_URL}"
+        f"{api_key}/{format}"
+        f"?{urllib.parse.urlencode(options)}"
+    )
+
+    urlbox_client = UrlboxClient(api_key=api_key)
+
+    with requests_mock.Mocker() as requests_mocker:
+        requests_mocker.head(
+            urlbox_request_url,
+            content=b"",
+            headers={"content-type": f"image/{format}"},
+        )
+
+        response = urlbox_client.head(options)
+
+        assert response.status_code == 200
+        assert format in response.headers["Content-Type"]
+        assert isinstance(response, requests.models.Response)
+        assert isinstance(response.content, bytes)
+        assert len(response.content) == 0
+

@@ -186,23 +186,23 @@ def test_get_successful_missing_schema_url():
         ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
     )
 
-    url = "twitter.com"
-    url_with_schema = f"http://{url}"
+    url_original = "twitter.com"
+    url_with_schema = f"http://{url_original}"
 
     options = {
-        "url": url_with_schema,
+        "url": url_original,
         "format": format,
         "full_page": random.choice([True, False]),
         "width": fake.random_int(),
     }
 
     options_parsed = options.copy()
-    options_parsed["url"] = url
+    options_parsed["url"] = url_with_schema
 
     urlbox_request_url = (
         f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options_parsed)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)

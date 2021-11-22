@@ -26,7 +26,7 @@ class UrlboxClient:
         self.api_secret = api_secret
         self.base_api_url = self._init_base_api_url(api_host_name)
 
-    def get(self, options):
+    def get(self, options, to_string=False):
         """
             Make simple get request to Urlbox API
 
@@ -34,6 +34,9 @@ class UrlboxClient:
             eg: {"url": "http://example.com/", "format": "png", "full_page": True, "width": 300}
 
             format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html".
+
+            :param to_string: (optional) if True, no request will be made to the API, instead a string
+            representing the unauthenticaed get request URL will be returned.
 
             Example: urlbox_client.get({"url": "http://example.com/", "format": "png", "full_page": True, "width": 300})
             API example: https://urlbox.io/docs/getting-started
@@ -49,6 +52,13 @@ class UrlboxClient:
 
         if not self._valid_url(url_stripped):
             raise InvalidUrlException(url_stripped)
+
+        if to_string:
+            return (
+                f"{self.base_api_url}"
+                f"{self.api_key}/{format}"
+                f"?{url_encoded_options}"
+            )
 
         if self.api_secret is None:
             return self._get_unauthenticated(format, url_encoded_options)

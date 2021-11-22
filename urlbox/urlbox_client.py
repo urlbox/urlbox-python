@@ -75,8 +75,6 @@ class UrlboxClient:
             )
         )
 
-    # private
-
     def _init_base_api_url(self, api_host_name):
         if api_host_name is None:
             return self.BASE_API_URL

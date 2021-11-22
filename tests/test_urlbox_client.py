@@ -1,5 +1,7 @@
 from faker import Faker
+from hashlib import sha1
 from urlbox import InvalidUrlException, UrlboxClient
+import hmac
 import pytest
 import random
 import requests
@@ -194,4 +196,3 @@ def test_get_with_different_host_name():
 
 # TODO:
 # Test invalid API key
-# Test with api_secret - authenticated request

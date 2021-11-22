@@ -47,11 +47,12 @@ class UrlboxClient:
         url = options["url"]
 
         url_stripped = url.strip()
-        options["url"] = url_stripped
+        url_parsed = self._append_schema(url_stripped)
+        options["url"] = url_parsed
         url_encoded_options = urllib.parse.urlencode(options)
 
-        if not self._valid_url(url_stripped):
-            raise InvalidUrlException(url_stripped)
+        if not self._valid_url(url_parsed):
+            raise InvalidUrlException(url_parsed)
 
         if to_string:
             return (
@@ -91,9 +92,11 @@ class UrlboxClient:
         else:
             return f"https://{api_host_name}/"
 
-    def _parsed_url(self, url):
-        # TODO: if not url.startswith("http"): url = "http://" + url
-        pass
+    def _append_schema(self, url):
+        if not url.startswith("http"):
+            return f"http://{url}"
+        else:
+            return url
 
     def _token(self, url_encoded_options):
         return (

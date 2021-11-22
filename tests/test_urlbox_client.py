@@ -179,6 +179,52 @@ def test_get_successful_white_space_url():
             assert isinstance(response.content, bytes)
 
 
+def test_get_successful_missing_schema_url():
+    api_key = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+
+    url = "twitter.com"
+    url_with_schema = f"http://{url}"
+
+    options = {
+        "url": url_with_schema,
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    options_parsed = options.copy()
+    options_parsed["url"] = url
+
+    urlbox_request_url = (
+        f"{UrlboxClient.BASE_API_URL}"
+        f"{api_key}/{format}"
+        f"?{urllib.parse.urlencode(options)}"
+    )
+
+    urlbox_client = UrlboxClient(api_key=api_key)
+
+    with requests_mock.Mocker() as requests_mocker:
+        with open(
+            "tests/files/urlbox_screenshot.png", "rb"
+        ) as urlbox_screenshot:
+            requests_mocker.get(
+                urlbox_request_url,
+                content=urlbox_screenshot.read(),
+                headers={"content-type": f"image/{format}"},
+            )
+
+            response = urlbox_client.get(options)
+
+            assert response.status_code == 200
+            assert format in response.headers["Content-Type"]
+            assert isinstance(response, requests.models.Response)
+            assert isinstance(response.content, bytes)
+
+
 def test_get_invalid_url():
     format = random.choice(
         ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]

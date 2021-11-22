@@ -47,7 +47,7 @@ class UrlboxClient:
         url = options["url"]
 
         url_stripped = url.strip()
-        url_parsed = self._append_schema(url_stripped)
+        url_parsed = self._prepend_schema(url_stripped)
         options["url"] = url_parsed
         url_encoded_options = urllib.parse.urlencode(options)
 
@@ -92,7 +92,7 @@ class UrlboxClient:
         else:
             return f"https://{api_host_name}/"
 
-    def _append_schema(self, url):
+    def _prepend_schema(self, url):
         if not url.startswith("http"):
             return f"http://{url}"
         else:

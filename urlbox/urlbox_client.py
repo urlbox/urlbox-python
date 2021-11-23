@@ -43,16 +43,23 @@ class UrlboxClient:
             Full options reference: https://urlbox.io/docs/options
         """
 
+        if "html" not in options and "url" not in options:
+            raise KeyError("Missing 'url' or 'html' key in options")
+
+        if "url" in options:
+            url = options["url"]
+
+            url_stripped = url.strip()
+            url_parsed = self._prepend_schema(url_stripped)
+            options["url"] = url_parsed
+
+            if not self._valid_url(url_parsed):
+                raise InvalidUrlException(url_parsed)
+
         format = options.get("format", "png")
-        url = options["url"]
+        options["format"] = format
 
-        url_stripped = url.strip()
-        url_parsed = self._prepend_schema(url_stripped)
-        options["url"] = url_parsed
         url_encoded_options = urllib.parse.urlencode(options)
-
-        if not self._valid_url(url_parsed):
-            raise InvalidUrlException(url_parsed)
 
         if to_string:
             return (
@@ -82,16 +89,23 @@ class UrlboxClient:
             Full options reference: https://urlbox.io/docs/options
         """
 
-        format = options["format"]
-        url = options["url"]
+        if "html" not in options and "url" not in options:
+            raise KeyError("Missing 'url' or 'html' key in options")
 
-        url_stripped = url.strip()
-        url_parsed = self._prepend_schema(url_stripped)
-        options["url"] = url_parsed
+        if "url" in options:
+            url = options["url"]
+
+            url_stripped = url.strip()
+            url_parsed = self._prepend_schema(url_stripped)
+            options["url"] = url_parsed
+
+            if not self._valid_url(url_parsed):
+                raise InvalidUrlException(url_parsed)
+
+        format = options.get("format", "png")
+        options["format"] = format
+
         url_encoded_options = urllib.parse.urlencode(options)
-
-        if not self._valid_url(url_parsed):
-            raise InvalidUrlException(url_parsed)
 
         return requests.head(
             (

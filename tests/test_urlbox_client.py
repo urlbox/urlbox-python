@@ -1,6 +1,7 @@
 from faker import Faker
 from hashlib import sha1
 from urlbox import InvalidUrlException, UrlboxClient
+import json
 import hmac
 import pytest
 import random
@@ -387,6 +388,7 @@ def test_get_unsuccessful_without_html_not_url():
     )
 
 
+# HEAD
 def test_head_request():
     api_key = fake.pystr()
 
@@ -424,4 +426,93 @@ def test_head_request():
         assert isinstance(response, requests.models.Response)
         assert isinstance(response.content, bytes)
         assert len(response.content) == 0
+
+
+# POST
+def test_post_request_successful():
+    api_key = fake.pystr()
+    api_secret = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+
+    options = {
+        "url": fake.url(),
+        "webhook_url": f"{fake.url()}/webook",
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    urlbox_request_url = (
+        f"{UrlboxClient.BASE_API_URL}{UrlboxClient.POST_END_POINT}"
+    )
+
+    urlbox_client = UrlboxClient(api_key=api_key, api_secret=api_secret)
+
+    with requests_mock.Mocker() as requests_mocker:
+        requests_mocker.post(
+            urlbox_request_url,
+            content=b'{"status":"created","renderId":"47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1","statusUrl":"https://api.urlbox.io/render/47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1"}',
+            headers={"content-type": "application/json"},
+            status_code=201,
+        )
+
+        response = urlbox_client.post(options)
+
+        assert response.status_code == 201
+        assert isinstance(response, requests.models.Response)
+        assert isinstance(response.content, bytes)
+
+
+def test_post_request_unsuccessful_missing_webhook_url():
+    api_key = fake.pystr()
+    api_secret = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+
+    options = {
+        "url": fake.url(),
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    urlbox_client = UrlboxClient(api_key=api_key, api_secret=api_secret)
+
+    with pytest.raises(KeyError) as missing_key_exception:
+        urlbox_client.post(options)
+
+    assert "Missing 'webhook_url' key in options" in str(
+        missing_key_exception.value
+    )
+
+
+def test_post_request_unsuccessful_missing_api_secret():
+    api_key = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+
+    options = {
+        "url": fake.url(),
+        "webhook_url": f"{fake.url()}/webook",
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    urlbox_client = UrlboxClient(api_key=api_key)
+
+    with pytest.raises(Exception) as ex:
+        urlbox_client.post(options)
+
+    assert (
+        "Missing api_secret when initialising client. Required for authorised post request."
+        in str(ex.value)
+    )
 

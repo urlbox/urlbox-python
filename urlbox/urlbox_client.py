@@ -1,3 +1,4 @@
+import json
 import hmac
 import requests
 import urllib.parse
@@ -20,6 +21,7 @@ class UrlboxClient:
     """
 
     BASE_API_URL = "https://api.urlbox.io/v1/"
+    POST_END_POINT = "render"
 
     def __init__(self, *, api_key, api_secret=None, api_host_name=None):
         self.api_key = api_key
@@ -33,7 +35,7 @@ class UrlboxClient:
             :param options: dictionary containing all of the options you want to set.
             eg: {"url": "http://example.com/", "format": "png", "full_page": True, "width": 300}
 
-            format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html".
+            format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html". Defaults to "png".
 
             :param to_string: (optional) if True, no request will be made to the API, instead a string
             representing the unauthenticaed get request URL will be returned.
@@ -82,7 +84,7 @@ class UrlboxClient:
             :param options: dictionary containing all of the options you want to set.
             eg: {"url": "http://example.com/", "format": "png", "full_page": True, "width": 300}
 
-            format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html".
+            format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html". Defaults to "png".
 
             Example: urlbox_client.get({"url": "http://example.com/", "format": "png", "full_page": True, "width": 300})
             API example: https://urlbox.io/docs/getting-started
@@ -113,6 +115,52 @@ class UrlboxClient:
                 f"{self.api_key}/{format}"
                 f"?{url_encoded_options}"
             )
+        )
+
+    def post(self, options):
+        """
+              Make post request to Urlbox API
+
+              :param options: dictionary containing all of the options you want to set.
+              eg: {"url": "http://example.com/", "webhook_url": "http://yoursite.com/webhook", "format": "png", "full_page": True, "width": 300}
+
+              format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html". Defaults to "png".
+
+              Example: urlbox_client.post({"url": "http://example.com/", "webhook_url": "http://yoursite.com/webhook", "format": "png", "full_page": True, "width": 300})
+              Full options reference: https://urlbox.io/docs/options
+          """
+
+        if "html" not in options and "url" not in options:
+            raise KeyError("Missing 'url' or 'html' key in options")
+
+        if "webhook_url" not in options:
+            raise KeyError("Missing 'webhook_url' key in options")
+
+        if self.api_secret is None:
+            raise Exception(
+                "Missing api_secret when initialising client. Required for authorised post request."
+            )
+
+        if "url" in options:
+            url = options["url"]
+
+            url_stripped = url.strip()
+            url_parsed = self._prepend_schema(url_stripped)
+            options["url"] = url_parsed
+
+            if not self._valid_url(url_parsed):
+                raise InvalidUrlException(url_parsed)
+
+        format = options.get("format", "png")
+        options["format"] = format
+
+        return requests.post(
+            f"{self.base_api_url}{self.POST_END_POINT}",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.api_secret}",
+            },
+            json=json.loads(json.dumps(options)),
         )
 
     # private

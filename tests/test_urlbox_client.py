@@ -85,6 +85,57 @@ def test_get_successful():
             assert isinstance(response.content, bytes)
 
 
+def test_get_successful_authenticated():
+    api_key = fake.pystr()
+    api_secret = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+    url = fake.url()
+
+    options = {
+        "url": url,
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+    url_encoded_options = urllib.parse.urlencode(options)
+
+    token = (
+        hmac.new(
+            str.encode(api_secret), str.encode(url_encoded_options), sha1,
+        )
+        .hexdigest()
+        .rstrip("\n")
+    )
+
+    urlbox_request_url = (
+        f"{UrlboxClient.BASE_API_URL}"
+        f"{api_key}/{token}/{format}"
+        f"?{url_encoded_options}"
+    )
+
+    urlbox_client = UrlboxClient(api_key=api_key, api_secret=api_secret)
+
+    with requests_mock.Mocker() as requests_mocker:
+        with open(
+            "tests/files/urlbox_screenshot.png", "rb"
+        ) as urlbox_screenshot:
+            requests_mocker.get(
+                urlbox_request_url,
+                content=urlbox_screenshot.read(),
+                headers={"content-type": f"image/{format}"},
+            )
+
+            response = urlbox_client.get(options)
+
+            assert response.status_code == 200
+            assert format in response.headers["Content-Type"]
+            assert isinstance(response, requests.models.Response)
+            assert isinstance(response.content, bytes)
+
+
 # providing just the api_key
 def test_get_successful_as_str():
     api_key = fake.pystr()
@@ -125,7 +176,6 @@ def test_get_successful_as_str_with_api_secret():
     }
 
     urlbox_client = UrlboxClient(api_key=api_key, api_secret=api_secret)
-
     response = urlbox_client.get(options, to_string=True)
 
     assert isinstance(response, str)

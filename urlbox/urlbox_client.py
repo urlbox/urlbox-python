@@ -8,7 +8,6 @@ from urlbox import InvalidUrlException
 
 
 class UrlboxClient:
-
     """
         The core client object used to interact with the Urlbox API
 
@@ -44,19 +43,10 @@ class UrlboxClient:
             API example: https://urlbox.io/docs/getting-started
             Full options reference: https://urlbox.io/docs/options
         """
-
-        if "html" not in options and "url" not in options:
-            raise KeyError("Missing 'url' or 'html' key in options")
+        self._raise_key_error_if_missing_required_keys(options)
 
         if "url" in options:
-            url = options["url"]
-
-            url_stripped = url.strip()
-            url_parsed = self._prepend_schema(url_stripped)
-            options["url"] = url_parsed
-
-            if not self._valid_url(url_parsed):
-                raise InvalidUrlException(url_parsed)
+            options["url"] = self._process_url(options["url"])
 
         format = options.get("format", "png")
         options["format"] = format
@@ -91,18 +81,10 @@ class UrlboxClient:
             Full options reference: https://urlbox.io/docs/options
         """
 
-        if "html" not in options and "url" not in options:
-            raise KeyError("Missing 'url' or 'html' key in options")
+        self._raise_key_error_if_missing_required_keys(options)
 
         if "url" in options:
-            url = options["url"]
-
-            url_stripped = url.strip()
-            url_parsed = self._prepend_schema(url_stripped)
-            options["url"] = url_parsed
-
-            if not self._valid_url(url_parsed):
-                raise InvalidUrlException(url_parsed)
+            options["url"] = self._process_url(options["url"])
 
         format = options.get("format", "png")
         options["format"] = format
@@ -130,8 +112,7 @@ class UrlboxClient:
               Full options reference: https://urlbox.io/docs/options
           """
 
-        if "html" not in options and "url" not in options:
-            raise KeyError("Missing 'url' or 'html' key in options")
+        self._raise_key_error_if_missing_required_keys(options)
 
         if "webhook_url" not in options:
             raise KeyError("Missing 'webhook_url' key in options")
@@ -142,14 +123,7 @@ class UrlboxClient:
             )
 
         if "url" in options:
-            url = options["url"]
-
-            url_stripped = url.strip()
-            url_parsed = self._prepend_schema(url_stripped)
-            options["url"] = url_parsed
-
-            if not self._valid_url(url_parsed):
-                raise InvalidUrlException(url_parsed)
+            options["url"] = self._process_url(options["url"])
 
         format = options.get("format", "png")
         options["format"] = format
@@ -195,6 +169,19 @@ class UrlboxClient:
         else:
             return url
 
+    def _process_url(self, url):
+        url_stripped = url.strip()
+        url_parsed = self._prepend_schema(url_stripped)
+
+        if not validators.url(url_parsed) == True:
+            raise InvalidUrlException(url_parsed)
+
+        return url_parsed
+
+    def _raise_key_error_if_missing_required_keys(self, options):
+        if "html" not in options and "url" not in options:
+            raise KeyError("Missing 'url' or 'html' key in options")
+
     def _token(self, url_encoded_options):
         return (
             hmac.new(
@@ -205,6 +192,3 @@ class UrlboxClient:
             .hexdigest()
             .rstrip("\n")
         )
-
-    def _valid_url(self, url):
-        return validators.url(url) == True

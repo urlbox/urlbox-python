@@ -179,6 +179,43 @@ def test_get_successful_white_space_url():
             assert isinstance(response.content, bytes)
 
 
+def test_get_successful_without_setting_format():
+    api_key = fake.pystr()
+
+    url = fake.url()
+
+    options = {
+        "url": url,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    urlbox_request_url = (
+        f"{UrlboxClient.BASE_API_URL}"
+        f"{api_key}/png"
+        f"?{urllib.parse.urlencode(options)}"
+    )
+
+    urlbox_client = UrlboxClient(api_key=api_key)
+
+    with requests_mock.Mocker() as requests_mocker:
+        with open(
+            "tests/files/urlbox_screenshot.png", "rb"
+        ) as urlbox_screenshot:
+            requests_mocker.get(
+                urlbox_request_url,
+                content=urlbox_screenshot.read(),
+                headers={"content-type": f"image/png"},
+            )
+
+            response = urlbox_client.get(options)
+
+            assert response.status_code == 200
+            assert "image/png" in response.headers["Content-Type"]
+            assert isinstance(response, requests.models.Response)
+            assert isinstance(response.content, bytes)
+
+
 def test_get_successful_missing_schema_url():
     api_key = fake.pystr()
 

@@ -43,7 +43,7 @@ class UrlboxClient:
             Full options reference: https://urlbox.io/docs/options
         """
 
-        format = options["format"]
+        format = options.get("format", "png")
         url = options["url"]
 
         url_stripped = url.strip()

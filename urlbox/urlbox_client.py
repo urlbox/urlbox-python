@@ -37,7 +37,7 @@ class UrlboxClient:
             format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html". Defaults to "png".
 
             :param to_string: (optional) if True, no request will be made to the API, instead a string
-            representing the unauthenticaed get request URL will be returned.
+            representing the unauthenticated get request URL will be returned.
 
             Example: urlbox_client.get({"url": "http://example.com/", "format": "png", "full_page": True, "width": 300})
             API example: https://urlbox.io/docs/getting-started

@@ -45,16 +45,13 @@ def test_call_invalid_signature():
         webhook_validator.call(header_signature, payload, api_secret)
 
 
-@pytest.mark.skip(
-    reason="need to get the server and client hashing working in sync"
-)
 def test_call_invalid_hash():
     header_signature = f"t={timestamp_one_minute_ago},sha256={fake.pystr()}"
 
     with pytest.raises(InvalidHeaderSignatureError) as exception:
         webhook_validator.call(header_signature, payload, api_secret)
 
-    assert "" in str(exception.value)
+    assert "Invalid signature" in str(exception.value)
 
 
 def test_call_invalid_timestamp():

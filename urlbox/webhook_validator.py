@@ -5,8 +5,8 @@ import re
 from hashlib import sha256
 from urlbox import InvalidHeaderSignatureError
 
+SIGNATURE_REGEX = "^sha256=[0-9a-zA-Z]{40,}$"
 TIMESTAMP_REGEX = "^t=[0-9]+$"
-SIGNATURE_REGEX = "^sha256=[0-9a-zA-Z]+$"
 WEBHOOK_AGE_MAX_MINUTES = 5
 
 

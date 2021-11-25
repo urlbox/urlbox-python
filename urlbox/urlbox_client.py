@@ -96,7 +96,9 @@ class UrlboxClient:
                 f"{self.base_api_url}"
                 f"{self.api_key}/{format}"
                 f"?{url_encoded_options}"
-            )
+            ),
+            allow_redirects=True,
+            timeout=100,
         )
 
     def post(self, options):
@@ -135,6 +137,7 @@ class UrlboxClient:
                 "Authorization": f"Bearer {self.api_secret}",
             },
             json=json.loads(json.dumps(options)),
+            timeout=5,
         )
 
     # private
@@ -145,7 +148,8 @@ class UrlboxClient:
                 f"{self.base_api_url}"
                 f"{self.api_key}/{self._token(url_encoded_options)}/{format}"
                 f"?{url_encoded_options}"
-            )
+            ),
+            timeout=100,
         )
 
     def _get_unauthenticated(self, format, url_encoded_options):
@@ -154,7 +158,8 @@ class UrlboxClient:
                 f"{self.base_api_url}"
                 f"{self.api_key}/{format}"
                 f"?{url_encoded_options}"
-            )
+            ),
+            timeout=100,
         )
 
     def _init_base_api_url(self, api_host_name):

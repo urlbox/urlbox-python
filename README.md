@@ -45,7 +45,9 @@ response.content # Your screenshot 🎉
 All UrlboxClient methods require at least one argument: a dictionary that *must include either a "url", or "html" entry*, which the UrlBox API will render as a screenshot.
 
 Additional options in the dictionary include:
+
 "format" can be either: png, jpg or jpeg, avif, webp ,pdf, svg, html  *(defaults to png if not provided).*
+
 "full_page", "width", and many more.
 See all available options here: https://urlbox.io/docs/options
 
@@ -154,7 +156,7 @@ You can then parse the renderUrl value to access the your screenshot.
 ## Secure Webhook Posts
 The Urlbox API post to your webhook endpoint will include a header that you can use to  ensure this is a genuine request from the Urlbox API, and not a malicious actor.
 
-Using your http client of choice, access the *x-urlbox-signature* header. It's value will be something similar to:
+Using your http client of choice, access the *x-urlbox-signature* header. Its value will be something similar to:
 
 `t=1637857959,sha256=1d721f99aa03122d494f8b49f201fdf806efaec609c614f0a0ec7b394f1d403a`
 

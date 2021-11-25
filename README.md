@@ -1,6 +1,10 @@
 # UrlBox Python Library
 
-The Urlbox Python library provides convenient access to the <a href="https://urlbox.io/" target="_blank">Urlbox API</a> from your Python application.
+The Urlbox Python library provides easy access to the <a href="https://urlbox.io/" target="_blank">Urlbox API</a> from your Python application.
+
+Now there's no need to muck around with http clients, etc...
+
+Just initialise the UrlboxClient and make a screenshot of a URL in seconds.
 
 
 ## Documentation
@@ -22,37 +26,173 @@ First, grab your Urlbox API key* found in your <a href="https://urlbox.io/dashbo
 
 *\* and grab your API secret - if you want to make authenticated requests.*
 
-```python
+###  Quick Start: Quickly Get a Screenshot of a URL
 
+```python
 from urlbox import UrlboxClient
 
-# Initialise the UrlboxClient (YOUR_API_SECRET is optional)
+# Initialise the UrlboxClient (YOUR_API_SECRET is optional but recommended)
 urlbox_client = UrlboxClient(api_key="YOUR_API_KEY", api_secret="YOUR_API_SECRET")
 
-format = "png"  # can be either: png, jpg or jpeg, avif, webp ,pdf, svg, html
+# Make a request to the UrlBox API
+response = urlbox_client.get({"url": "http://example.com/"})
 
-# See all available options here: https://urlbox.io/docs/options
-options = {"full_page": True, "width": 300}
+response.content # Your screenshot 🎉
 
-response = urlbox_client.get("http://example.com/", format=format, options=options)
+```
 
-# Requests will be authenticated when you supply YOUR_API_SECRET,
-# unless you override: authenticated_request=False
+All UrlboxClient methods require at least one argument: a dictionary that *must include either a "url", or "html" entry*, which the UrlBox API will render as a screenshot.
+
+Additional options in the dictionary include:
+"format" can be either: png, jpg or jpeg, avif, webp ,pdf, svg, html  *(defaults to png if not provided).*
+"full_page", "width", and many more.
+See all available options here: https://urlbox.io/docs/options
+
+eg:
+```python
+{"url": "http://example.com/", "full_page": True, "width": 300}
+```
+
+
+👩‍💻Dev Best Practice 👩‍💻
+Requests will be automatically authenticated when you supply YOUR_API_SECRET.
+So you really should.
+
+### A More Extensive Get Request
+```python
+from urlbox import UrlboxClient
+
+urlbox_client = UrlboxClient(api_key="YOUR_API_KEY", api_secret="YOUR_API_SECRET")
+
+options = {
+	"url": "https://www.independent.co.uk/arts-entertainment/tv/news/squid-game-real-youtube-mrbeast-b1964007.html",
+	"format": "jpg",
+	"full_page": False,
+	"hide_cookie_banners": True,
+	"block_ads": True
+}
+
+response = urlbox_client.get(options)
 
 # The Urlbox API will return binary data as the response with the
 # Content-Type header set to the relevant mime-type for the format requested.
-# For example, if you requested png format, the Content-Type will be image/png
-# and response body will be the actual PNG binary data.
+# For example, if you requested jpg format, the Content-Type will be image/png
+# and response body will be the actual jpg binary data.
 
-# TODO: show processing the response
+response.content # Your screenshot. Which looks like 👇
+```
+![image](https://user-images.githubusercontent.com/1453680/143479491-78d8edbc-dfdc-48e3-9ae0-3b59bcf98e2c.png)
 
-# TODO: Include further endpoints (head, post, etc), polling and webhook functionality.
+
+### The "to_string" Option
+If you want to access the Urlbox request URL, for example to embed the screenshot directly in your HTML, you can make use of the "to_string" option.
+
+```python
+
+urlbox_screenshot_url = urlbox_client.get({"url": "https://google.com"}, to_string=True)
+
+print(f"urlbox_screenshot_url: {urlbox_screenshot_url}")
+
+> urlbox_screenshot_url: https://api.urlbox.io/v1/api_key/png?url=https://google.com
+```
+Which you could then use directly in your html. For example, say you want to render a `png` screenshot of `google.com` thumbnailed down to 300px wide, you could set an `<img>` tag's `src` attribute like so:
+
+```html
+<img  src="https://api.urlbox.io/v1/api-key/png?url=google.com&thumb_width=300"  alt="Urlbox API thumbnail screenshot of google.com"/>
+```
+
+## Other Methods/Requests
+The UrlboxClient has the following public methods:
+
+### get(options, to_string=False)
+*(as detailed in the above examples)*
+Makes a GET request to the UrlBox API to create a screenshot for the url or html passed in the options dictionary.
+Optional *to_string* parameter doesn't make the GET request but instead returns the Urlbox screenshot URL for you to work with directly.
+
+Example request:
+```python
+response = urlbox_client.get({"url": "http://example.com/"})
+response.content # Your screenshot 🎉
+```
+
+### delete(options)
+Removes a previously created screenshot from the cache.
+
+Example request:
+```python
+urlbox_client.delete({"url": "http://example.com/"})
+```
+### head(options)
+If you just want to get the response status/headers without pulling down the full response body.
+
+Example request:
+```python
+urlbox_client.head({"url": "http://example.com/"})
+```
+
+### post(options)
+Uses Urlbox's webhook functionality to initialise a render of a screenshot. You will need to provide a *"webhook_url"* entry in the options which Urlbox will post back to when the rendering of the screenshot is complete.
+
+Example request:
+```python
+urlbox_client.post({"url": "http://twitter.com/", "webhook_url": "http://yoursite.com/webhook"})
+```
+Give it a couple of seconds, and you should receive, posted to the webhook_url specified in your request above a post request with a JSON body similar to:
+```json
+{
+  "event": "render.succeeded",
+  "renderId": "2cf5ffe2-7736-4d41-8c30-f13e16d35248",
+  "result": {
+    "renderUrl": "https://renders.urlbox.io/urlbox1/renders/61431b47b8538a00086c29dd/2021/11/25/e2dcec18-8353-435c-ba17-b549c849eec5.png"
+  },
+  "meta": {
+    "startTime": "2021-11-25T16:32:32.453Z",
+    "endTime": "2021-11-25T16:32:38.719Z"
+  }
+}
+```
+You can then parse the renderUrl value to access the your screenshot.
 
 
+## Secure Webhook Posts
+The Urlbox API post to your webhook endpoint will include a header that you can use to  ensure this is a genuine request from the Urlbox API, and not a malicious actor.
+
+Using your http client of choice, access the *x-urlbox-signature* header. It's value will be something similar to:
+
+`t=1637857959,sha256=1d721f99aa03122d494f8b49f201fdf806efaec609c614f0a0ec7b394f1d403a`
+
+Use the *webhook_validator* helper function that is included, for no extra charge, in the urlbox package to verify that the webhook post is indeed a genuine request from the Urlbox API. Like so:
+
+```python
+from urlbox import webhook_validator
+
+# extracted from the x-urlbox-signature header
+header_signature = "t=1637857959,sha256=1d721f..."
+
+# the raw JSON payload from the webhook request body
+payload = {
+	"event": "render.succeeded",
+	"renderId": "794383cd-b09e-4aef-a12b-fadf8aad9d63",
+	"result": {
+		"renderUrl": "https://renders.urlbox.io/urlbox1/renders/foo.png"
+	},
+	"meta": {
+		"startTime": "2021-11-24T16:49:48.307Z",
+		"endTime": "2021-11-24T16:49:53.659Z",
+	},
+}
+
+# Your webhook secret - coming soon.
+# NB: This is NOT your api_secret, that's different.
+webhook_secret = "YOUR_WEBHOOK_SECRET"
+
+# This will either return true (if the signature is genuinely from UrlBox)
+#   or it will raise a InvalidHeaderSignatureError (if the signature is not from Urlbox)
+webhook_validator.call(header_signature, payload, webhook_secret)
 ```
 
 
 ## Feedback
 
 
-Feel free to contact us if you have spot a bug or have any suggestion at chris`[at]`urlbox.io.
+Feel free to contact us if you spot a bug or have any suggestions at: chris`[at]`urlbox.io.

@@ -24,7 +24,8 @@ Python 3.x
 
 First, grab your Urlbox API key* found in your <a href="https://urlbox.io/dashboard/api" target="_blank">Urlbox Dashboard</a>, to initialise the UrlboxClient instance.
 
-*\* and grab your API secret - if you want to make authenticated requests.*
+*\* and grab your API secret - if you want to make authenticated requests. Requests will be automatically authenticated when you supply YOUR_API_SECRET.
+So you really should.*
 
 ###  Quick Start: Quickly Get a Screenshot of a URL
 
@@ -53,10 +54,6 @@ eg:
 {"url": "http://example.com/", "full_page": True, "width": 300}
 ```
 
-
-👩‍💻Dev Best Practice 👩‍💻
-Requests will be automatically authenticated when you supply YOUR_API_SECRET.
-So you really should.
 
 ### A More Extensive Get Request
 ```python
@@ -137,7 +134,7 @@ Example request:
 ```python
 urlbox_client.post({"url": "http://twitter.com/", "webhook_url": "http://yoursite.com/webhook"})
 ```
-Give it a couple of seconds, and you should receive, posted to the webhook_url specified in your request above a post request with a JSON body similar to:
+Give it a couple of seconds, and you should receive, posted to the webhook_url specified in your request above, a post request with a JSON body similar to:
 ```json
 {
   "event": "render.succeeded",

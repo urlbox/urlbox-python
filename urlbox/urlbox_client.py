@@ -65,6 +65,33 @@ class UrlboxClient:
         else:
             return self._get_authenticated(format, url_encoded_options)
 
+    def delete(self, options):
+        """
+            Deletes the screenshot from the cache.
+
+            :param options: dictionary containing url of the site the screneshot has captured
+            and the format of the original screenshot eg: png, jpg, etc
+            eg: {"url": "http://example.com/", "format": "png"}
+        """
+
+        self._raise_key_error_if_missing_required_keys(options)
+
+        if "url" in options:
+            options["url"] = self._process_url(options["url"])
+
+        format = options.get("format", "png")
+        options["format"] = format
+
+        url_encoded_options = urllib.parse.urlencode(options)
+
+        return requests.delete(
+            (
+                f"{self.base_api_url}"
+                f"{self.api_key}/{format}"
+                f"?{url_encoded_options}"
+            )
+        )
+
     def head(self, options):
         """
             Make simple head request to Urlbox API

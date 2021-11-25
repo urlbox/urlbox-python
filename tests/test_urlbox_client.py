@@ -438,6 +438,37 @@ def test_get_unsuccessful_without_html_not_url():
     )
 
 
+# DELETE
+def test_delete_request():
+    api_key = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+    url = fake.url()
+
+    options = {"url": url, "format": format}
+
+    urlbox_request_url = (
+        f"{UrlboxClient.BASE_API_URL}"
+        f"{api_key}/{format}"
+        f"?{urllib.parse.urlencode(options)}"
+    )
+
+    urlbox_client = UrlboxClient(api_key=api_key)
+
+    with requests_mock.Mocker() as requests_mocker:
+        requests_mocker.delete(
+            urlbox_request_url, headers={"content-type": f"image/{format}"}
+        )
+
+        response = urlbox_client.delete(options)
+
+        assert response.status_code == 200
+        assert format in response.headers["Content-Type"]
+        assert isinstance(response, requests.models.Response)
+
+
 # HEAD
 def test_head_request():
     api_key = fake.pystr()

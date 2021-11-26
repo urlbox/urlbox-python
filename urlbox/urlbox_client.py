@@ -184,7 +184,7 @@ class UrlboxClient:
         format = processed_options.get("format", "png")
         processed_options["format"] = format
 
-        return urllib.parse.urlencode(processed_options), format
+        return urllib.parse.urlencode(processed_options, doseq=True), format
 
     def _process_url(self, url):
         url_stripped = url.strip()

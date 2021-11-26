@@ -8,6 +8,7 @@ import random
 import requests
 import requests_mock
 import urllib.parse
+import warnings
 
 
 fake = Faker()
@@ -604,6 +605,7 @@ def test_post_with_different_host_name():
         "full_page": random.choice([True, False]),
         "width": fake.random_int(),
     }
+
     urlbox_request_url = (
         f"https://{api_host_name}/{UrlboxClient.POST_END_POINT}"
     )
@@ -642,14 +644,35 @@ def test_post_request_unsuccessful_missing_webhook_url():
         "width": fake.random_int(),
     }
 
-    urlbox_client = UrlboxClient(api_key=api_key, api_secret=api_secret)
-
-    with pytest.raises(KeyError) as missing_key_exception:
-        urlbox_client.post(options)
-
-    assert "Missing 'webhook_url' key in options" in str(
-        missing_key_exception.value
+    urlbox_request_url = (
+        f"{UrlboxClient.BASE_API_URL}{UrlboxClient.POST_END_POINT}"
     )
+
+    with requests_mock.Mocker() as requests_mocker:
+        requests_mocker.post(
+            urlbox_request_url,
+            content=b'{"status":"created","renderId":"47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1","statusUrl":"https://api.urlbox.io/render/47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1"}',
+            headers={"content-type": "application/json"},
+            status_code=201,
+        )
+
+        urlbox_client = UrlboxClient(api_key=api_key, api_secret=api_secret)
+
+        with warnings.catch_warnings(record=True) as warning:
+            response = urlbox_client.post(options)
+
+            # Test resoonse
+            assert response.status_code == 201
+            assert isinstance(response, requests.models.Response)
+            assert isinstance(response.content, bytes)
+
+            # Test warning
+            assert len(warning) == 1
+            assert issubclass(warning[-1].category, UserWarning)
+            assert (
+                "webhook_url not supplied, you will need to poll the statusUrl in order to get your result"
+                in str(warning[-1].message)
+            )
 
 
 def test_post_request_unsuccessful_missing_api_secret():

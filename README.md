@@ -216,4 +216,4 @@ webhook_validator.call(header_signature, payload, webhook_secret)
 ## Feedback
 
 
-Feel free to contact us if you spot a bug or have any suggestions at: chris`[at]`urlbox.io.
+Feel free to contact us if you spot a bug or have any suggestions at: support`[at]`urlbox.io.

@@ -3,6 +3,7 @@ import hmac
 import requests
 import urllib.parse
 import validators
+import warnings
 from hashlib import sha1
 from urlbox import InvalidUrlException
 
@@ -121,7 +122,9 @@ class UrlboxClient:
         self._raise_key_error_if_missing_required_keys(options)
 
         if "webhook_url" not in options:
-            raise KeyError("Missing 'webhook_url' key in options")
+            warnings.warn(
+                "webhook_url not supplied, you will need to poll the statusUrl in order to get your result"
+            )
 
         if self.api_secret is None:
             raise Exception(

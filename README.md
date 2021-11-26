@@ -1,5 +1,5 @@
 ![image](https://user-images.githubusercontent.com/1453680/143582241-f44bd8c6-c242-48f4-8f9a-ed5507948588.png)
-# UrlBox Python Library
+# Urlbox Python Library
 
 The Urlbox Python library provides easy access to the <a href="https://urlbox.io/" target="_blank">Urlbox API</a> from your Python application.
 
@@ -43,7 +43,7 @@ response.content # Your screenshot 🎉
 
 ```
 
-All UrlboxClient methods require at least one argument: a dictionary that *must include either a "url", or "html" entry*, which the UrlBox API will render as a screenshot.
+All UrlboxClient methods require at least one argument: a dictionary that *must include either a "url", or "html" entry*, which the Urlbox API will render as a screenshot.
 
 Additional options in the dictionary include:
 
@@ -106,7 +106,7 @@ The UrlboxClient has the following public methods:
 
 ### get(options, to_string=False)
 *(as detailed in the above examples)*
-Makes a GET request to the UrlBox API to create a screenshot for the url or html passed in the options dictionary.
+Makes a GET request to the Urlbox API to create a screenshot for the url or html passed in the options dictionary.
 Optional *to_string* parameter doesn't make the GET request but instead returns the Urlbox screenshot URL for you to work with directly.
 
 Example request:
@@ -186,7 +186,7 @@ payload = {
 # NB: This is NOT your api_secret, that's different.
 webhook_secret = "YOUR_WEBHOOK_SECRET"
 
-# This will either return true (if the signature is genuinely from UrlBox)
+# This will either return true (if the signature is genuinely from Urlbox)
 #   or it will raise a InvalidHeaderSignatureError (if the signature is not from Urlbox)
 webhook_validator.call(header_signature, payload, webhook_secret)
 ```

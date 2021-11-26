@@ -41,6 +41,10 @@ response = urlbox_client.get({"url": "http://example.com/"})
 
 response.content # Your screenshot 🎉
 
+# save screenshot image to screenshot.png:
+with open("screenshot.png", "wb") as f:
+    f.write(response.content)
+
 ```
 
 All UrlboxClient methods require at least one argument: a dictionary that *must include either a "url", or "html" entry*, which the Urlbox API will render as a screenshot.

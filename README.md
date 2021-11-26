@@ -127,8 +127,29 @@ If you just want to get the response status/headers without pulling down the ful
 
 Example request:
 ```python
-urlbox_client.head({"url": "http://example.com/"})
+response = urlbox_client.head({"url": "http://example.com/"})
+
+print(str(response.headers))
+
 ```
+
+Example response headers:
+
+```json
+{
+   "Date":"Fri, 26 Nov 2021 16:22:56 GMT",
+   "Content-Type":"image/png",
+   "Content-Length":"1268491",
+   "Connection":"keep-alive",
+   "Cache-Control":"public, max-age=2592000",
+   "Expires":"Sun, 26 Dec 2021 16:16:09 GMT",
+   "Last-Modified":"Fri, 26 Nov 2021 16:14:56 GMT",
+   "X-Renders-Used":"60",
+   "X-Renders-Reset":"Sun Dec 05 2021 09:58:00 GMT+0000 (Coordinated Universal Time)",
+   "X-Renders-Allowed":"22000"
+}
+```
+You can use these headers to check how many renders you have used or your current rate limiting status, etc.
 
 ### post(options)
 Uses Urlbox's webhook functionality to initialise a render of a screenshot. You will need to provide a *"webhook_url"* entry in the options which Urlbox will post back to when the rendering of the screenshot is complete.

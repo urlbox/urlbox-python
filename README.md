@@ -76,7 +76,7 @@ response = urlbox_client.get(options)
 
 # The Urlbox API will return binary data as the response with the
 # Content-Type header set to the relevant mime-type for the format requested.
-# For example, if you requested jpg format, the Content-Type will be image/png
+# For example, if you requested jpg format, the Content-Type will be image/jpeg
 # and response body will be the actual jpg binary data.
 
 response.content # Your screenshot. Which looks like 👇

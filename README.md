@@ -39,7 +39,7 @@ urlbox_client = UrlboxClient(api_key="YOUR_API_KEY", api_secret="YOUR_API_SECRET
 # Make a request to the UrlBox API
 response = urlbox_client.get({"url": "http://example.com/"})
 
-response.content # Your screenshot 🎉
+response.content # Your screenshot 🎉 as binary image data
 
 # save screenshot image to screenshot.png:
 with open("screenshot.png", "wb") as f:

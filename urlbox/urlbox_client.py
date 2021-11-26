@@ -43,27 +43,20 @@ class UrlboxClient:
             API example: https://urlbox.io/docs/getting-started
             Full options reference: https://urlbox.io/docs/options
         """
-        self._raise_key_error_if_missing_required_keys(options)
 
-        if "url" in options:
-            options["url"] = self._process_url(options["url"])
-
-        format = options.get("format", "png")
-        options["format"] = format
-
-        url_encoded_options = urllib.parse.urlencode(options)
+        processed_options, format = self._process_options(options)
 
         if to_string:
             return (
                 f"{self.base_api_url}"
                 f"{self.api_key}/{format}"
-                f"?{url_encoded_options}"
+                f"?{processed_options}"
             )
 
         if self.api_secret is None:
-            return self._get_unauthenticated(format, url_encoded_options)
+            return self._get_unauthenticated(format, processed_options)
         else:
-            return self._get_authenticated(format, url_encoded_options)
+            return self._get_authenticated(format, processed_options)
 
     def delete(self, options):
         """
@@ -74,21 +67,13 @@ class UrlboxClient:
             eg: {"url": "http://example.com/", "format": "png"}
         """
 
-        self._raise_key_error_if_missing_required_keys(options)
-
-        if "url" in options:
-            options["url"] = self._process_url(options["url"])
-
-        format = options.get("format", "png")
-        options["format"] = format
-
-        url_encoded_options = urllib.parse.urlencode(options)
+        processed_options, format = self._process_options(options)
 
         return requests.delete(
             (
                 f"{self.base_api_url}"
                 f"{self.api_key}/{format}"
-                f"?{url_encoded_options}"
+                f"?{processed_options}"
             )
         )
 
@@ -108,21 +93,13 @@ class UrlboxClient:
             Full options reference: https://urlbox.io/docs/options
         """
 
-        self._raise_key_error_if_missing_required_keys(options)
-
-        if "url" in options:
-            options["url"] = self._process_url(options["url"])
-
-        format = options.get("format", "png")
-        options["format"] = format
-
-        url_encoded_options = urllib.parse.urlencode(options)
+        processed_options, format = self._process_options(options)
 
         return requests.head(
             (
                 f"{self.base_api_url}"
                 f"{self.api_key}/{format}"
-                f"?{url_encoded_options}"
+                f"?{processed_options}"
             ),
             allow_redirects=True,
             timeout=100,
@@ -169,23 +146,19 @@ class UrlboxClient:
 
     # private
 
-    def _get_authenticated(self, format, url_encoded_options):
+    def _get_authenticated(self, format, options):
         return requests.get(
             (
                 f"{self.base_api_url}"
-                f"{self.api_key}/{self._token(url_encoded_options)}/{format}"
-                f"?{url_encoded_options}"
+                f"{self.api_key}/{self._token(options)}/{format}"
+                f"?{options}"
             ),
             timeout=100,
         )
 
-    def _get_unauthenticated(self, format, url_encoded_options):
+    def _get_unauthenticated(self, format, options):
         return requests.get(
-            (
-                f"{self.base_api_url}"
-                f"{self.api_key}/{format}"
-                f"?{url_encoded_options}"
-            ),
+            (f"{self.base_api_url}{self.api_key}/{format}?{options}"),
             timeout=100,
         )
 
@@ -200,6 +173,21 @@ class UrlboxClient:
             return f"http://{url}"
         else:
             return url
+
+    def _process_options(self, options):
+        self._raise_key_error_if_missing_required_keys(options)
+
+        processed_options = options.copy()
+
+        if "url" in processed_options:
+            processed_options["url"] = self._process_url(
+                processed_options["url"]
+            )
+
+        format = processed_options.get("format", "png")
+        processed_options["format"] = format
+
+        return urllib.parse.urlencode(processed_options), format
 
     def _process_url(self, url):
         url_stripped = url.strip()

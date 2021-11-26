@@ -100,6 +100,7 @@ def test_get_successful_authenticated():
         "format": format,
         "full_page": random.choice([True, False]),
         "width": fake.random_int(),
+        "header":["header1=value1", "header2=value2"],
     }
     url_encoded_options = urllib.parse.urlencode(options)
 

@@ -119,8 +119,6 @@ class UrlboxClient:
               Full options reference: https://urlbox.io/docs/options
           """
 
-        self._raise_key_error_if_missing_required_keys(options)
-
         if "webhook_url" not in options:
             warnings.warn(
                 "webhook_url not supplied, you will need to poll the statusUrl in order to get your result"
@@ -131,11 +129,7 @@ class UrlboxClient:
                 "Missing api_secret when initialising client. Required for authorised post request."
             )
 
-        if "url" in options:
-            options["url"] = self._process_url(options["url"])
-
-        format = options.get("format", "png")
-        options["format"] = format
+        processed_options, _ = self._process_options(options)
 
         return requests.post(
             f"{self.base_api_url}{self.POST_END_POINT}",
@@ -143,7 +137,7 @@ class UrlboxClient:
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.api_secret}",
             },
-            json=json.loads(json.dumps(options)),
+            json=json.loads(json.dumps(processed_options)),
             timeout=5,
         )
 

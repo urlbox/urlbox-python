@@ -63,7 +63,7 @@ def test_get_successful():
     urlbox_request_url = (
         f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -100,9 +100,9 @@ def test_get_successful_authenticated():
         "format": format,
         "full_page": random.choice([True, False]),
         "width": fake.random_int(),
-        "header":["header1=value1", "header2=value2"],
+        "header": ["header1=value1", "header2=value2"],
     }
-    url_encoded_options = urllib.parse.urlencode(options)
+    url_encoded_options = urllib.parse.urlencode(options, doseq=True)
 
     token = (
         hmac.new(
@@ -209,7 +209,7 @@ def test_get_successful_white_space_url():
     urlbox_request_url = (
         f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options_parsed)}"
+        f"?{urllib.parse.urlencode(options_parsed, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -246,7 +246,7 @@ def test_get_successful_without_setting_format():
     urlbox_request_url = (
         f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/png"
-        f"?{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -292,7 +292,7 @@ def test_get_successful_missing_schema_url():
     urlbox_request_url = (
         f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options_parsed)}"
+        f"?{urllib.parse.urlencode(options_parsed, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -355,7 +355,7 @@ def test_get_with_different_host_name():
     urlbox_request_url = (
         f"https://{api_host_name}/"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key, api_host_name=api_host_name)
@@ -392,7 +392,7 @@ def test_get_successful_with_html_not_url():
     urlbox_request_url = (
         f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -427,7 +427,7 @@ def test_get_unsuccessful_without_html_not_url():
     urlbox_request_url = (
         f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -454,7 +454,7 @@ def test_delete_request():
     urlbox_request_url = (
         f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -490,7 +490,7 @@ def test_head_request():
     urlbox_request_url = (
         f"{UrlboxClient.BASE_API_URL}"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key)
@@ -530,7 +530,7 @@ def test_head_with_different_host_name():
     urlbox_request_url = (
         f"https://{api_host_name}/"
         f"{api_key}/{format}"
-        f"?{urllib.parse.urlencode(options)}"
+        f"?{urllib.parse.urlencode(options, doseq=True)}"
     )
 
     urlbox_client = UrlboxClient(api_key=api_key, api_host_name=api_host_name)

@@ -109,10 +109,9 @@ response.content # Your screenshot. Which looks like 👇
 ## Other Methods/Requests
 The UrlboxClient has the following public methods:
 
-### get(options, to_string=False)
+### get(options)
 *(as detailed in the above examples)*
 Makes a GET request to the Urlbox API to create a screenshot for the url or html passed in the options dictionary.
-Optional *to_string* parameter doesn't make the GET request but instead returns the Urlbox screenshot URL for you to work with directly.
 
 Example request:
 ```python

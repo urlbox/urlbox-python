@@ -185,6 +185,56 @@ def test_get_successful_as_str_with_api_secret():
     assert api_secret not in response
 
 
+def test_get_with_header_array_in_options():
+    api_key = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+    url = fake.url()
+
+    options = {
+        "url": url,
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+        "header": [
+            "x-my-first-header=somevalue",
+            "x-my-second-header=someothervalue",
+        ],
+    }
+
+    urlbox_request_url = (
+        f"{UrlboxClient.BASE_API_URL}"
+        f"{api_key}/{format}"
+        f"?{urllib.parse.urlencode(options, doseq=True)}"
+    )
+
+    urlbox_client = UrlboxClient(api_key=api_key)
+
+    with requests_mock.Mocker() as requests_mocker:
+        with open(
+            "tests/files/urlbox_screenshot.png", "rb"
+        ) as urlbox_screenshot:
+            requests_mocker.get(
+                urlbox_request_url,
+                content=urlbox_screenshot.read(),
+                headers={"content-type": f"image/{format}"},
+            )
+
+            response = urlbox_client.get(options)
+
+            assert response.status_code == 200
+            assert format in response.headers["Content-Type"]
+            assert isinstance(response, requests.models.Response)
+            assert isinstance(response.content, bytes)
+
+            assert (
+                "header=x-my-first-header%3Dsomevalue&header=x-my-second-header%3Dsomeothervalue"
+                in urlbox_request_url
+            )
+
+
 # valid url but with white spaces before and after
 def test_get_successful_white_space_url():
     api_key = fake.pystr()

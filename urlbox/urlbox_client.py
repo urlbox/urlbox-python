@@ -28,7 +28,7 @@ class UrlboxClient:
         self.api_secret = api_secret
         self.base_api_url = self._init_base_api_url(api_host_name)
 
-    def get(self, options, to_string=False):
+    def get(self, options):
         """
             Make simple get request to Urlbox API
 
@@ -45,19 +45,7 @@ class UrlboxClient:
             Full options reference: https://urlbox.io/docs/options
         """
 
-        processed_options, format = self._process_options(options)
-
-        if to_string:
-            return (
-                f"{self.base_api_url}"
-                f"{self.api_key}/{format}"
-                f"?{processed_options}"
-            )
-
-        if self.api_secret is None:
-            return self._get_unauthenticated(format, processed_options)
-        else:
-            return self._get_authenticated(format, processed_options)
+        return requests.get(self.generate_url(options), timeout=100)
 
     def delete(self, options):
         """
@@ -141,23 +129,42 @@ class UrlboxClient:
             timeout=5,
         )
 
-    # private
+    def generate_url(self, options):
+        """
+            Generate the Urlbox URL as a string for use directly in HTML templates, the browser etc.
 
-    def _get_authenticated(self, format, options):
-        return requests.get(
-            (
+            :param options: dictionary containing all of the options you want to set.
+            eg: {"url": "http://example.com/", "format": "png", "full_page": True, "width": 300}
+
+            Example:
+            In your python_code.py:
+            # Initialise the UrlboxClient (YOUR_API_SECRET is optional but recommended)
+            urlbox_client = UrlboxClient(api_key="YOUR_API_KEY", api_secret="YOUR_API_SECRET")
+
+            screenshot_url = urlbox_client.generate_url({"url": "http://example.com/"})
+
+            In your html template:
+            <img src="{{  screenshot_url }}"/>
+
+            Full options reference: https://urlbox.io/docs/options
+        """
+
+        processed_options, format = self._process_options(options)
+
+        if self.api_secret is None:
+            return (
                 f"{self.base_api_url}"
-                f"{self.api_key}/{self._token(options)}/{format}"
-                f"?{options}"
-            ),
-            timeout=100,
-        )
+                f"{self.api_key}/{format}"
+                f"?{processed_options}"
+            )
+        else:
+            return (
+                f"{self.base_api_url}"
+                f"{self.api_key}/{self._token(processed_options)}/{format}"
+                f"?{processed_options}"
+            )
 
-    def _get_unauthenticated(self, format, options):
-        return requests.get(
-            (f"{self.base_api_url}{self.api_key}/{format}?{options}"),
-            timeout=100,
-        )
+    # private
 
     def _init_base_api_url(self, api_host_name):
         if api_host_name is None:

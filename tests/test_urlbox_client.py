@@ -138,53 +138,6 @@ def test_get_successful_authenticated():
             assert isinstance(response.content, bytes)
 
 
-# providing just the api_key
-def test_get_successful_as_str():
-    api_key = fake.pystr()
-
-    format = random.choice(
-        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
-    )
-    url = fake.url()
-
-    options = {
-        "url": url,
-        "format": format,
-        "full_page": random.choice([True, False]),
-        "width": fake.random_int(),
-    }
-
-    urlbox_client = UrlboxClient(api_key=api_key)
-
-    response = urlbox_client.get(options, to_string=True)
-
-    assert isinstance(response, str)
-
-
-def test_get_successful_as_str_with_api_secret():
-    api_key = fake.pystr()
-    api_secret = fake.pystr()
-
-    format = random.choice(
-        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
-    )
-    url = fake.url()
-
-    options = {
-        "url": url,
-        "format": format,
-        "full_page": random.choice([True, False]),
-        "width": fake.random_int(),
-    }
-
-    urlbox_client = UrlboxClient(api_key=api_key, api_secret=api_secret)
-    response = urlbox_client.get(options, to_string=True)
-
-    assert isinstance(response, str)
-    # It still returns the unautenticated get url
-    assert api_secret not in response
-
-
 def test_get_with_header_array_in_options():
     api_key = fake.pystr()
 
@@ -751,3 +704,49 @@ def test_post_request_unsuccessful_missing_api_secret():
         in str(ex.value)
     )
 
+
+# Test generate_url
+def test_generate_url_without_api_secret():
+    api_key = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+    url = fake.url()
+
+    options = {
+        "url": url,
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    urlbox_client = UrlboxClient(api_key=api_key)
+
+    urlbox_url = urlbox_client.generate_url(options)
+
+    assert isinstance(urlbox_url, str)
+
+
+def test_get_successful_as_str_with_api_secret():
+    api_key = fake.pystr()
+    api_secret = fake.pystr()
+
+    format = random.choice(
+        ["png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html"]
+    )
+    url = fake.url()
+
+    options = {
+        "url": url,
+        "format": format,
+        "full_page": random.choice([True, False]),
+        "width": fake.random_int(),
+    }
+
+    urlbox_client = UrlboxClient(api_key=api_key, api_secret=api_secret)
+    urlbox_url = urlbox_client.generate_url(options)
+
+    assert isinstance(urlbox_url, str)
+    # It doesn't leak the api_secret (uses the tokenised options instead)
+    assert api_secret not in urlbox_url

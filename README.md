@@ -28,6 +28,24 @@ First, grab your Urlbox API key* found in your <a href="https://urlbox.io/dashbo
 *\* and grab your API secret - if you want to make authenticated requests. Requests will be automatically authenticated when you supply YOUR_API_SECRET.
 So you really should.*
 
+### Quick Start:  Generate a Screenshot URL
+For use directly in HTML templates, the browser etc.
+
+In your python_code.py:
+```python
+from urlbox import UrlboxClient
+
+# Initialise the UrlboxClient (YOUR_API_SECRET is optional but recommended)
+urlbox_client = UrlboxClient(api_key="YOUR_API_KEY", api_secret="YOUR_API_SECRET")
+
+screenshot_url = urlbox_client.generate_url({"url": "http://example.com/"})
+```
+
+In your html template:
+```html
+<img src="{{  screenshot_url }}"/>
+```
+
 ###  Quick Start: Quickly Get a Screenshot of a URL
 
 ```python

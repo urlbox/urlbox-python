@@ -45,12 +45,7 @@ class UrlboxClient:
             Full options reference: https://urlbox.io/docs/options
         """
 
-        processed_options, format = self._process_options(options)
-
-        if self.api_secret is None:
-            return self._get_unauthenticated(format, processed_options)
-        else:
-            return self._get_authenticated(format, processed_options)
+        return requests.get(self.generate_url(options), timeout=100)
 
     def delete(self, options):
         """
@@ -170,22 +165,6 @@ class UrlboxClient:
             )
 
     # private
-
-    def _get_authenticated(self, format, options):
-        return requests.get(
-            (
-                f"{self.base_api_url}"
-                f"{self.api_key}/{self._token(options)}/{format}"
-                f"?{options}"
-            ),
-            timeout=100,
-        )
-
-    def _get_unauthenticated(self, format, options):
-        return requests.get(
-            (f"{self.base_api_url}{self.api_key}/{format}?{options}"),
-            timeout=100,
-        )
 
     def _init_base_api_url(self, api_host_name):
         if api_host_name is None:

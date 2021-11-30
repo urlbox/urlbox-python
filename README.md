@@ -106,23 +106,6 @@ response.content # Your screenshot. Which looks like 👇
 ![image](https://user-images.githubusercontent.com/1453680/143479491-78d8edbc-dfdc-48e3-9ae0-3b59bcf98e2c.png)
 
 
-### The "to_string" Option
-If you want to access the Urlbox request URL, for example to embed the screenshot directly in your HTML, you can make use of the "to_string" option.
-
-```python
-
-urlbox_screenshot_url = urlbox_client.get({"url": "https://google.com"}, to_string=True)
-
-print(f"urlbox_screenshot_url: {urlbox_screenshot_url}")
-
-> urlbox_screenshot_url: https://api.urlbox.io/v1/api_key/png?url=https://google.com
-```
-Which you could then use directly in your html. For example, say you want to render a `png` screenshot of `google.com` thumbnailed down to 300px wide, you could set an `<img>` tag's `src` attribute like so:
-
-```html
-<img  src="https://api.urlbox.io/v1/api-key/png?url=google.com&thumb_width=300"  alt="Urlbox API thumbnail screenshot of google.com"/>
-```
-
 ## Other Methods/Requests
 The UrlboxClient has the following public methods:
 

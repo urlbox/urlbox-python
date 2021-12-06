@@ -633,7 +633,7 @@ def test_post_with_different_host_name():
         assert isinstance(response.content, bytes)
 
 
-def test_post_request_unsuccessful_missing_webhook_url():
+def test_post_request_successful_missing_webhook_url():
     api_key = fake.pystr()
     api_secret = fake.pystr()
 

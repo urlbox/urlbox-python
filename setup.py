@@ -5,9 +5,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="urlbox",
-    version="1.0.5",
-    author="Alan Donohoe",
-    author_email="alan@urlbox.io",
+    version="1.0.6",
+    author="Urlbox",
+    author_email="support@urlbox.io",
     description="Official Python client for the Ulrbox API",
     license="MIT",
     long_description=long_description,

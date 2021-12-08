@@ -9,9 +9,6 @@ jobs:
     env:
       OS: ${{ matrix.os }}
       PYTHON: '3.7'
-    ignore:
-    - "conftest.py"
-    - "setup.py"
     steps:
     - uses: actions/checkout@main
     - name: Setup Python

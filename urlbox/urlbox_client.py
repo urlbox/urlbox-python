@@ -117,7 +117,7 @@ class UrlboxClient:
                 "Missing api_secret when initialising client. Required for authorised post request."
             )
 
-        processed_options, _ = self._process_options(options)
+        processed_options, _ = self._process_options_post_request(options)
 
         return requests.post(
             f"{self.base_api_url}{self.POST_END_POINT}",
@@ -126,7 +126,7 @@ class UrlboxClient:
                 "Authorization": f"Bearer {self.api_secret}",
             },
             allow_redirects=True,
-            json=json.loads(json.dumps(processed_options)),
+            json=processed_options,
             timeout=5,
         )
 
@@ -179,7 +179,7 @@ class UrlboxClient:
         else:
             return url
 
-    def _process_options(self, options):
+    def _process_options(self, options, url_encode_options=True):
         self._raise_key_error_if_missing_required_keys(options)
 
         processed_options = options.copy()
@@ -192,7 +192,16 @@ class UrlboxClient:
         format = processed_options.get("format", "png")
         processed_options["format"] = format
 
-        return urllib.parse.urlencode(processed_options, doseq=True), format
+        if url_encode_options:
+            return (
+                urllib.parse.urlencode(processed_options, doseq=True),
+                format,
+            )
+        else:
+            return processed_options, format
+
+    def _process_options_post_request(self, options):
+        return self._process_options(options, False)
 
     def _process_url(self, url):
         url_stripped = url.strip()

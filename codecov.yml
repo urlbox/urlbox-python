@@ -1,0 +1,3 @@
+ignore:
+    - 'conftest.py'
+    - 'setup.py'

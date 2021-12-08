@@ -42,7 +42,9 @@ class UrlboxClient:
             Full options reference: https://urlbox.io/docs/options
         """
 
-        return requests.get(self.generate_url(options), timeout=100)
+        return requests.get(
+            self.generate_url(options), allow_redirects=True, timeout=100
+        )
 
     def delete(self, options):
         """
@@ -60,7 +62,8 @@ class UrlboxClient:
                 f"{self.base_api_url}"
                 f"{self.api_key}/{format}"
                 f"?{processed_options}"
-            )
+            ),
+            allow_redirects=True,
         )
 
     def head(self, options):
@@ -122,6 +125,7 @@ class UrlboxClient:
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.api_secret}",
             },
+            allow_redirects=True,
             json=json.loads(json.dumps(processed_options)),
             timeout=5,
         )

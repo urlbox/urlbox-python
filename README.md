@@ -5,7 +5,7 @@
 ![Tests](https://github.com/urlbox/urlbox-python/actions/workflows/tests.yml/badge.svg)
 ![Linter](https://github.com/urlbox/urlbox-python/actions/workflows/linters.yml/badge.svg)
 
-The Urlbox Python library provides easy access to the <a href="https://urlbox.io/" target="_blank">Urlbox website screenshot API</a> from your Python application.
+The Urlbox Python library provides easy access to the <a href="https://urlbox.com/" target="_blank">Urlbox website screenshot API</a> from your Python application.
 
 Now there's no need to muck around with http clients, etc...
 
@@ -14,7 +14,7 @@ Just initialise the UrlboxClient and make a screenshot of a URL in seconds.
 
 ## Documentation
 
-See the <a href=https://urlbox.io/docs/overview target="_blank">Urlbox API Docs</a>.
+See the <a href=https://urlbox.com/docs/overview target="_blank">Urlbox API Docs</a>.
 
 ## Requirements
 
@@ -27,7 +27,7 @@ Python 3.x
 
 ## Usage
 
-First, grab your Urlbox API key* found in your <a href="https://urlbox.io/dashboard/api" target="_blank">Urlbox Dashboard</a>, to initialise the UrlboxClient instance.
+First, grab your Urlbox API key* found in your <a href="https://urlbox.com/dashboard/api" target="_blank">Urlbox Dashboard</a>, to initialise the UrlboxClient instance.
 
 *\* and grab your API secret - if you want to make authenticated requests. Requests will be automatically authenticated when you supply YOUR_API_SECRET.
 So you really should.*
@@ -76,7 +76,7 @@ Additional options in the dictionary include:
 "format" can be either: png, jpg or jpeg, avif, webp ,pdf, svg, html  *(defaults to png if not provided).*
 
 "full_page", "width", and many more.
-See all available options here: https://urlbox.io/docs/options
+See all available options here: https://urlbox.com/docs/options
 
 eg:
 ```python
@@ -172,7 +172,7 @@ Give it a couple of seconds, and you should receive, posted to the webhook_url s
   "event": "render.succeeded",
   "renderId": "2cf5ffe2-7736-4d41-8c30-f13e16d35248",
   "result": {
-    "renderUrl": "https://renders.urlbox.io/urlbox1/renders/61431b47b8538a00086c29dd/2021/11/25/e2dcec18-8353-435c-ba17-b549c849eec5.png"
+    "renderUrl": "https://renders.urlbox.com/urlbox1/renders/61431b47b8538a00086c29dd/2021/11/25/e2dcec18-8353-435c-ba17-b549c849eec5.png"
   },
   "meta": {
     "startTime": "2021-11-25T16:32:32.453Z",
@@ -203,7 +203,7 @@ payload = {
 	"event": "render.succeeded",
 	"renderId": "794383cd-b09e-4aef-a12b-fadf8aad9d63",
 	"result": {
-		"renderUrl": "https://renders.urlbox.io/urlbox1/renders/foo.png"
+		"renderUrl": "https://renders.urlbox.com/urlbox1/renders/foo.png"
 	},
 	"meta": {
 		"startTime": "2021-11-24T16:49:48.307Z",
@@ -224,4 +224,4 @@ webhook_validator.call(header_signature, payload, webhook_secret)
 ## Feedback
 
 
-Feel free to contact us if you spot a bug or have any suggestions at: support`[at]`urlbox.io.
+Feel free to contact us if you spot a bug or have any suggestions at: support`[at]`urlbox.com.

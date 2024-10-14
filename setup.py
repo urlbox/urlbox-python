@@ -7,7 +7,7 @@ setuptools.setup(
     name="urlbox",
     version="1.0.6",
     author="Urlbox",
-    author_email="support@urlbox.io",
+    author_email="support@urlbox.com",
     description="Official Python client for the Ulrbox API",
     license="MIT",
     long_description=long_description,

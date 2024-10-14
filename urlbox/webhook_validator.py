@@ -19,7 +19,7 @@ def call(header_signature, payload, webhook_secret):
       :param payload: json body of the webhook request.
 
       :param webhook_secret: Your webhook secret found in your Urlbox (NB: NOT the api secret - that's a different secret)
-      Dashboard`https://urlbox.io/dashboard/api`
+      Dashboard`https://urlbox.com/dashboard/api`
 
       This function parses the signature value to determine if it's part of a valid Urlbox webhook request.
     """

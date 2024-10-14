@@ -36,9 +36,10 @@ def test_api_key_not_provided():
     with pytest.raises(TypeError) as type_error:
         UrlboxClient()
 
+        # Required UrlboxClient. as prefix to pass tests locally for python@3.11.6
     assert (
         str(type_error.value)
-        == "__init__() missing 1 required keyword-only argument: 'api_key'"
+        == "UrlboxClient.__init__() missing 1 required keyword-only argument: 'api_key'"
     )
 
 
@@ -340,7 +341,7 @@ def test_get_invalid_url():
 
 
 def test_get_with_different_host_name():
-    api_host_name = random.choice(["api-eu.urlbox.io", "api-direct.urlbox.io"])
+    api_host_name = random.choice(["api-eu.urlbox.com", "api-direct.urlbox.com"])
     api_key = fake.pystr()
 
     format = random.choice(
@@ -515,7 +516,7 @@ def test_head_request():
 
 
 def test_head_with_different_host_name():
-    api_host_name = random.choice(["api-eu.urlbox.io", "api-direct.urlbox.io"])
+    api_host_name = random.choice(["api-eu.urlbox.com", "api-direct.urlbox.com"])
     api_key = fake.pystr()
 
     format = random.choice(
@@ -580,7 +581,7 @@ def test_post_request_successful():
     with requests_mock.Mocker() as requests_mocker:
         requests_mocker.post(
             urlbox_request_url,
-            content=b'{"status":"created","renderId":"47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1","statusUrl":"https://api.urlbox.io/render/47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1"}',
+            content=b'{"status":"created","renderId":"47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1","statusUrl":"https://api.urlbox.com/render/47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1"}',
             headers={"content-type": "application/json"},
             status_code=201,
         )
@@ -593,7 +594,7 @@ def test_post_request_successful():
 
 
 def test_post_with_different_host_name():
-    api_host_name = random.choice(["api-eu.urlbox.io", "api-direct.urlbox.io"])
+    api_host_name = random.choice(["api-eu.urlbox.com", "api-direct.urlbox.com"])
     api_key = fake.pystr()
     api_secret = fake.pystr()
 
@@ -621,7 +622,7 @@ def test_post_with_different_host_name():
     with requests_mock.Mocker() as requests_mocker:
         requests_mocker.post(
             urlbox_request_url,
-            content=b'{"status":"created","renderId":"47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1","statusUrl":"https://api.urlbox.io/render/47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1"}',
+            content=b'{"status":"created","renderId":"47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1","statusUrl":"https://api.urlbox.com/render/47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1"}',
             headers={"content-type": "application/json"},
             status_code=201,
         )
@@ -655,7 +656,7 @@ def test_post_request_successful_missing_webhook_url():
     with requests_mock.Mocker() as requests_mocker:
         requests_mocker.post(
             urlbox_request_url,
-            content=b'{"status":"created","renderId":"47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1","statusUrl":"https://api.urlbox.io/render/47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1"}',
+            content=b'{"status":"created","renderId":"47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1","statusUrl":"https://api.urlbox.com/render/47dd4b7b-1eea-437c-ade0-f2d1cd7bf5a1"}',
             headers={"content-type": "application/json"},
             status_code=201,
         )

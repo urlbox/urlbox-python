@@ -5,7 +5,7 @@
 ![Tests](https://github.com/urlbox/urlbox-python/actions/workflows/tests.yml/badge.svg)
 ![Linter](https://github.com/urlbox/urlbox-python/actions/workflows/linters.yml/badge.svg)
 
-The Urlbox Python library provides easy access to the <a href="https://urlbox.io/" target="_blank">Urlbox website screenshot API</a> from your Python application.
+The Urlbox Python library provides easy access to the <a href="https://urlbox.com/" target="_blank">Urlbox website screenshot API</a> from your Python application.
 
 Now there's no need to muck around with http clients, etc...
 
@@ -14,7 +14,7 @@ Just initialise the UrlboxClient and make a screenshot of a URL in seconds.
 
 ## Documentation
 
-See the <a href=https://urlbox.io/docs/overview target="_blank">Urlbox API Docs</a>.
+See the <a href=https://urlbox.com/docs/ target="_blank">Urlbox API Docs</a>.
 
 ## Requirements
 
@@ -27,7 +27,7 @@ Python 3.x
 
 ## Usage
 
-First, grab your Urlbox API key* found in your <a href="https://urlbox.io/dashboard/api" target="_blank">Urlbox Dashboard</a>, to initialise the UrlboxClient instance.
+First, grab your Urlbox API key* found in your <a href="https://urlbox.com/dashboard/api" target="_blank">Urlbox Dashboard</a>, to initialise the UrlboxClient instance.
 
 *\* and grab your API secret - if you want to make authenticated requests. Requests will be automatically authenticated when you supply YOUR_API_SECRET.
 So you really should.*
@@ -76,7 +76,7 @@ Additional options in the dictionary include:
 "format" can be either: png, jpg or jpeg, avif, webp ,pdf, svg, html  *(defaults to png if not provided).*
 
 "full_page", "width", and many more.
-See all available options here: https://urlbox.io/docs/options
+See all available options here: https://urlbox.com/docs/options
 
 eg:
 ```python

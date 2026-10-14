@@ -23,7 +23,7 @@ payload = {
     "event": "render.succeeded",
     "renderId": "794383cd-b09e-4aef-a12b-fadf8aad9d63",
     "result": {
-        "renderUrl": "https://renders.urlbox.io/urlbox1/renders/61431b47b8538a00086c29dd/2021/11/24/bee42850-bab6-43c6-bd9d-e614581d31b4.png"
+        "renderUrl": "https://renders.urlbox.com/urlbox1/renders/61431b47b8538a00086c29dd/2021/11/24/bee42850-bab6-43c6-bd9d-e614581d31b4.png"
     },
     "meta": {
         "startTime": "2021-11-24T16:49:48.307Z",

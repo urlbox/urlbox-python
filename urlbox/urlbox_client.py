@@ -13,14 +13,14 @@ class UrlboxClient:
         The core client object used to interact with the Urlbox API
 
         :param api_key: Your API key found in your Urlbox Dashboard
-        `https://urlbox.io/dashboard/api`
+        `https://urlbox.com/dashboard/api`
 
         :param api_secret: (Optional) Your API secret found in your Urlbox
-        Dashboard`https://urlbox.io/dashboard/api`
+        Dashboard`https://urlbox.com/dashboard/api`
         Required for authenticated requests.
     """
 
-    BASE_API_URL = "https://api.urlbox.io/v1/"
+    BASE_API_URL = "https://api.urlbox.com/v1/"
     POST_END_POINT = "render"
 
     def __init__(self, *, api_key, api_secret=None, api_host_name=None):
@@ -38,8 +38,8 @@ class UrlboxClient:
             format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html". Defaults to "png".
 
             Example: urlbox_client.get({"url": "http://example.com/", "format": "png", "full_page": True, "width": 300})
-            API example: https://urlbox.io/docs/getting-started
-            Full options reference: https://urlbox.io/docs/options
+            API example: https://urlbox.com/docs/getting-started
+            Full options reference: https://urlbox.com/docs/options
         """
 
         return requests.get(
@@ -78,8 +78,8 @@ class UrlboxClient:
             format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html". Defaults to "png".
 
             Example: urlbox_client.get({"url": "http://example.com/", "format": "png", "full_page": True, "width": 300})
-            API example: https://urlbox.io/docs/getting-started
-            Full options reference: https://urlbox.io/docs/options
+            API example: https://urlbox.com/docs/getting-started
+            Full options reference: https://urlbox.com/docs/options
         """
 
         processed_options, format = self._process_options(options)
@@ -104,7 +104,7 @@ class UrlboxClient:
               format: can be either "png", "jpg", "jpeg", "avif", "webp", "pdf", "svg", "html". Defaults to "png".
 
               Example: urlbox_client.post({"url": "http://example.com/", "webhook_url": "http://yoursite.com/webhook", "format": "png", "full_page": True, "width": 300})
-              Full options reference: https://urlbox.io/docs/options
+              Full options reference: https://urlbox.com/docs/options
           """
 
         if "webhook_url" not in options:
@@ -147,7 +147,7 @@ class UrlboxClient:
             In your html template:
             <img src="{{  screenshot_url }}"/>
 
-            Full options reference: https://urlbox.io/docs/options
+            Full options reference: https://urlbox.com/docs/options
         """
 
         processed_options, format = self._process_options(options)

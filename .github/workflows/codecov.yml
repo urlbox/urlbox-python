@@ -8,19 +8,20 @@ jobs:
         os: [ubuntu-latest]
     env:
       OS: ${{ matrix.os }}
-      PYTHON: '3.7'
+      PYTHON: '3.12'
     steps:
-    - uses: actions/checkout@main
+    - uses: actions/checkout@v4
     - name: Setup Python
-      uses: actions/setup-python@main
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.7
+        python-version: '3.12'
     - name: Generate coverage report
       run: |
-        pip install Faker pytest pytest-cov pytest-socket requests requests_mock validators
+        pip install -r requirements.txt
+        pip install Faker pytest pytest-cov pytest-socket requests_mock
         pytest --cov=./ --cov-report=xml
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       with:
         directory: ./coverage/reports/
         env_vars: OS,PYTHON

@@ -10,7 +10,7 @@ readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Urlbox", email = "support@urlbox.com" }]
 requires-python = ">=3.10"
-dependencies = ["requests>=2.33.0,<3", "validators>=0.18.2"]
+dependencies = ["requests>=2.33.0,<3", "validators>=0.35.0"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",

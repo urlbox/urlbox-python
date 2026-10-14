@@ -1,2 +1,2 @@
-requests>=2.32.4,<3
+requests>=2.33.0,<3
 validators>=0.18.2

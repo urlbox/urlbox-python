@@ -18,7 +18,7 @@ See the <a href=https://urlbox.com/docs/ target="_blank">Urlbox API Docs</a>.
 
 ## Requirements
 
-Python 3.9+
+Python 3.10+
 
 ## Installation
 

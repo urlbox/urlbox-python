@@ -64,9 +64,11 @@ def _check_timestamp(timestamp):
 
 
 def _check_webhook_creation_time(timestamp):
-    header_datetime = datetime.datetime.utcfromtimestamp(timestamp)
+    header_datetime = datetime.datetime.fromtimestamp(
+        timestamp, datetime.timezone.utc
+    )
 
-    current_datetime = datetime.datetime.utcnow()
+    current_datetime = datetime.datetime.now(datetime.timezone.utc)
 
     webhook_posted = current_datetime - header_datetime
     webhook_posted_minutes_ago = webhook_posted.total_seconds() / 60

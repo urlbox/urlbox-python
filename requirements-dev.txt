@@ -1,0 +1,6 @@
+Faker
+flake8
+pytest
+pytest-cov
+pytest-socket
+requests-mock

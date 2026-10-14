@@ -36,9 +36,8 @@ def test_api_key_not_provided():
     with pytest.raises(TypeError) as type_error:
         UrlboxClient()
 
-    assert (
-        str(type_error.value)
-        == "__init__() missing 1 required keyword-only argument: 'api_key'"
+    assert str(type_error.value).endswith(
+        "__init__() missing 1 required keyword-only argument: 'api_key'"
     )
 
 
